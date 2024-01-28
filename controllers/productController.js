@@ -187,7 +187,7 @@ export const createReview = async (req,res,next)=>{
         const {rating,comment} = req.body;
 
         const review = {
-            user:req.user.id,
+            user:req.user,
             name:req.user.name,
             rating:Number(rating),
             comment
