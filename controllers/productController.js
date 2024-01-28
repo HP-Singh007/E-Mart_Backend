@@ -189,7 +189,6 @@ export const createReview = async (req,res,next)=>{
         const review = {
             user:req.user.id,
             name:req.user.name,
-            avatar:req.user.avatar,
             rating:Number(rating),
             comment
         }
@@ -270,7 +269,14 @@ export const deleteReview = async(req,res,next)=>{
 //get all reviews
 export const getAllReviews = async(req,res,next)=>{
     try{
-        const product = await Product.findById(req.params.id);
+        const product = await Product.findById(req.params.id).populate({
+            path:'reviews',
+            populate:{
+                path:'user',
+                model:'User',
+                select:'avatar'
+            }
+        });
         if(!product){
             return next(new ErrorHandler("No product found",404));
         }
