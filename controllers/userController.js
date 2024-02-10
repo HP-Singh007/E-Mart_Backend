@@ -281,7 +281,7 @@ export const updateUserDetails = async(req,res,next)=>{
        const {name,email} = req.body;
        let avatar;
 
-       if(req.body.avatar.length){
+       if(req.body.avatar !== ""){
             //deleting old from cloudinary
             await cloudinary.uploader.destroy(req.user.avatar.public_ID);
 
