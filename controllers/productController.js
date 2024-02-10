@@ -239,7 +239,7 @@ export const deleteReview = async(req,res,next)=>{
         }
 
         product.reviews.forEach(item=>{
-            if((item._id.toString() === req.query.reviewId) && (item.user.toString() === req.user.id)){
+            if((item._id.toString() === req.query.reviewId)){
                 item.deleteOne();
             }
         })

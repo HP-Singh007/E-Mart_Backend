@@ -180,7 +180,7 @@ export const forgetPassword = async(req,res,next)=>{
     const resetToken = user.getResetPasswordToken();
     await user.save({validateBeforeSave:false});
 
-    const resetUrl = `${process.env.FRONTEND_URL}/users/password/reset/${resetToken}`;
+    const resetUrl = `${process.env.FRONTEND_URL}/${process.env.BASE_URL}/users/password/reset/${resetToken}`;
     const message = `Your password reset token is \n\n ${resetUrl} \n\n If you haven't requested this then just ignore it`;
 
     try {
@@ -277,24 +277,29 @@ export const changePassword = async(req,res,next)=>{
 
 //update user details
 export const updateUserDetails = async(req,res,next)=>{
-    try{
+    try{       
+       const {name,email} = req.body;
+       let avatar;
 
-        //deleting old from cloudinary
-        await cloudinary.uploader.destroy(req.user.avatar.public_ID);
+       if(req.body.avatar.length){
+            //deleting old from cloudinary
+            await cloudinary.uploader.destroy(req.user.avatar.public_ID);
 
-        //saving to cloudinary
-        const myCloud = await cloudinary.uploader.upload(req.body.avatar,{
-            folder:"avatars",
-            width:150,
-            crop:"scale"
-        })
-
-        const {name,email} = req.body;
-
-        const avatar = {
-            public_ID:myCloud.public_id,
-            url:myCloud.secure_url
-        }
+            //saving to cloudinary
+            const myCloud = await cloudinary.uploader.upload(req.body.avatar,{
+                folder:"avatars",
+                width:150,
+                crop:"scale"
+            })            
+    
+            avatar = {
+                public_ID:myCloud.public_id,
+                url:myCloud.secure_url
+            }
+       }
+       else{
+            avatar = req.user.avatar;
+       }
 
         const newObj={
             name,
